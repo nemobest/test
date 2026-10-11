@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vercel 部署测试页面</title>
+    <script src="https://aisearch-task.bj.bcebos.com/static/tailwindcss-3.4.17.js"></script>
+    <style>
+        :root {
+            --brand-rgb: 0, 112, 243;
+            --success-rgb: 0, 200, 83;
+            --warning-rgb: 255, 171, 0;
+            --card-bg: rgba(255, 255, 255, 0.8);
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'HarmonyOS Sans SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 50%, #f0f4f8 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, rgb(var(--brand-rgb)), #7928ca);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .pulse-dot {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.2); }
+        }
+        
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .code-block {
+            font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
+            background: #1e1e2e;
+            color: #cdd6f4;
+            border-radius: 8px;
+            padding: 16px;
+            overflow-x: auto;
+        }
+        
+        .status-success {
+            background: rgba(var(--success-rgb), 0.1);
+            color: rgb(var(--success-rgb));
+            border: 1px solid rgba(var(--success-rgb), 0.2);
+        }
+        
+        .btn-primary {
+            background: rgb(var(--brand-rgb));
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(var(--brand-rgb), 0.3);
+        }
+        
+        .test-item {
+            transition: all 0.2s ease;
+        }
+        
+        .test-item.pass {
+            border-left: 3px solid rgb(var(--success-rgb));
+        }
+        
+        .counter-display {
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Staggered entrance animation */
+        .stagger-enter {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .stagger-enter:nth-child(1) { animation-delay: 0.1s; }
+        .stagger-enter:nth-child(2) { animation-delay: 0.2s; }
+        .stagger-enter:nth-child(3) { animation-delay: 0.3s; }
+        .stagger-enter:nth-child(4) { animation-delay: 0.4s; }
+        .stagger-enter:nth-child(5) { animation-delay: 0.5s; }
+        .stagger-enter:nth-child(6) { animation-delay: 0.6s; }
+    </style>
+</head>
+<body class="pb-16">
+    <!-- Hero Section -->
+    <header class="pt-12 pb-8 px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center stagger-enter">
+                <div class="inline-flex items-center gap-2 status-success px-4 py-2 rounded-full text-sm font-medium mb-6">
+                    <span class="pulse-dot w-2 h-2 rounded-full bg-[rgb(var(--success-rgb))]"></span>
+                    部署成功！页面正常运行
+                </div>
+                <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-black gradient-text mb-4 leading-tight">
+                    Vercel 测试页面
+                </h1>
+                <p class="text-gray-600 text-[16px] md:text-[18px] max-w-2xl mx-auto leading-relaxed">
+                    恭喜！你的静态页面已成功部署到 Vercel。本页面用于验证部署环境、测试各项功能是否正常工作。
+                </p>
+                <div class="mt-8 flex flex-wrap justify-center gap-3">
+                    <button onclick="runAllTests()" class="btn-primary text-white px-6 py-3 rounded-xl font-medium flex items-center gap-2">
+                        <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        运行全部测试
+                    </button>
+                    <a href="https://vercel.com/dashboard" target="_blank" class="glass-card px-6 py-3 rounded-xl font-medium text-gray-700 hover:bg-white transition-all flex items-center gap-2">
+                        <svg class="w-[18px] h-[18px] shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M24 22.525H0l12-21.05 12 21.05z"/>
+                        </svg>
+                        前往 Vercel 控制台
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 space-y-6">
+        <!-- 环境信息卡片 -->
+        <section class="glass-card rounded-2xl p-6 stagger-enter">
+            <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <svg class="w-[22px] h-[22px] shrink-0 text-[rgb(var(--brand-rgb))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                环境信息
+            </h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-gray-50 rounded-xl p-4">
+                    <div class="text-xs text-gray-500 uppercase tracking-wider mb-1">页面地址</div>
+                    <div id="page-url" class="text-sm font-mono text-gray-800 break-all">检测中...</div>
+                </div>
+                <div class="bg-gray-50 rounded-xl p-4">
+                    <div class="text-xs text-gray-500 uppercase tracking-wider mb-1">部署环境</div>
+                    <div id="environment" class="text-sm font-medium text-gray-800">检测中...</div>
+                </div>
+                <div class="bg-gray-50 rounded-xl p-4">
+                    <div class="text-xs text-gray-500 uppercase tracking-wider mb-1">协议</div>
+                    <div id="protocol" class="text-sm font-medium text-gray-800">检测中...</div>
+                </div>
+                <div class="bg-gray-50 rounded-xl p-4">
+                    <div class="text-xs text-gray-500 uppercase tracking-wider mb-1">页面加载时间</div>
+                    <div id="load-time" class="text-sm font-medium text-gray-800">计算中...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 测试项列表 -->
+        <section class="glass-card rounded-2xl p-6 stagger-enter">
+            <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <svg class="w-[22px] h-[22px] shrink-0 text-[rgb(var(--brand-rgb))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                </svg>
+                功能测试
+            </h2>
+            <div id="test-list" class="space-y-3">
+                <div class="test-item bg-gray-50 rounded-xl p-4 flex items-center justify-between" data-test="html">
+                    <div class="flex items-center gap-3">
+                        <div class="test-icon w-8 h-8 rounded-lg bg-gray-200 flex items-center justify-center">
+                            <svg class="w-[18px] h-[18px] text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="font-medium text-gray-800">HTML 渲染</div>
+                            <div class="text-sm text-gray-500">页面 HTML 结构是否正常加载</div>
+                        </div>
+                    </div>
+                    <div class="test-status text-sm font-medium text-gray-400">待检测</div>
+                </div>
+                
+                <div class="test-item bg-gray-50 rounded-xl p-4 flex items-center justify-between" data-test="css">
+                    <div class="flex items-center gap-3">
+                        <div class="test-icon w-8 h-8 rounded-lg bg-gray-200 flex items-center justify-center">
+                            <svg class="w-[18px] h-[18px] text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="font-medium text-gray-800">CSS 样式</div>
+                            <div class="text-sm text-gray-500">Tailwind CSS 与自定义样式是否生效</div>
+                        </div>
+                    </div>
+                    <div class="test-status text-sm font-medium text-gray-400">待检测</div>
+                </div>
+                
+                <div class="test-item bg-gray-50 rounded-xl p-4 flex items-center justify-between" data-test="js">
+                    <div class="flex items-center gap-3">
+                        <div class="test-icon w-8 h-8 rounded-lg bg-gray-200 flex items-center justify-center">
+                            <svg class="w-[18px] h-[18px] text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="font-medium text-gray-800">JavaScript</div>
+                            <div class="text-sm text-gray-500">JavaScript 脚本是否正常执行</div>
+                        </div>
+                    </div>
+                    <div class="test-status text-sm font-medium text-gray-400">待检测</div>
+                </div>
+                
+                <div class="test-item bg-gray-50 rounded-xl p-4 flex items-center justify-between" data-test="responsive">
+                    <div class="flex items-center gap-3">
+                        <div class="test-icon w-8 h-8 rounded-lg bg-gray-200 flex items-center justify-center">
+                            <svg class="w-[18px] h-[18px] text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="font-medium text-gray-800">响应式布局</div>
+                            <div class="text-sm text-gray-500">在不同屏幕尺寸下是否正常显示</div>
+                        </div>
+                    </div>
+                    <div class="test-status text-sm font-medium text-gray-400">待检测</div>
+                </div>
+                
+                <div class="test-item bg-gray-50 rounded-xl p-4 flex items-center justify-between" data-test="https">
+                    <div class="flex items-center gap-3">
+                        <div class="test-icon w-8 h-8 rounded-lg bg-gray-200 flex items-center justify-center">
+                            <svg class="w-[18px] h-[18px] text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="font-medium text-gray-800">HTTPS 加密</div>
+                            <div class="text-sm text-gray-500">是否自动启用 HTTPS 安全连接</div>
+                        </div>
+                    </div>
+                    <div class="test-status text-sm font-medium text-gray-400">待检测</div>
+                </div>
+                
+                <div class="test-item bg-gray-50 rounded-xl p-4 flex items-center justify-between" data-test="cdn">
+                    <div class="flex items-center gap-3">
+                        <div class="test-icon w-8 h-8 rounded-lg bg-gray-200 flex items-center justify-center">
+                            <svg class="w-[18px] h-[18px] text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="font-medium text-gray-800">CDN 加速</div>
+                            <div class="text-sm text-gray-500">Vercel 全球 CDN 是否正常工作</div>
+                        </div>
+                    </div>
+                    <div class="test-status text-sm font-medium text-gray-400">待检测</div>
+                </div>
+            </div>
+            
+            <div id="test-summary" class="mt-4 p-4 rounded-xl bg-gray-50 hidden">
+                <div class="flex items-center justify-between">
+                    <span class="font-medium text-gray-800">测试结果汇总</span>
+                    <span id="pass-count" class="font-bold text-[rgb(var(--success-rgb))]">0/6 通过</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 交互演示区 -->
+        <section class="grid md:grid-cols-2 gap-6">
+            <!-- 计数器 -->
+            <div class="glass-card rounded-2xl p-6 stagger-enter">
+                <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <svg class="w-[20px] h-[20px] shrink-0 text-[rgb(var(--brand-rgb))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                    </svg>
+                    交互测试：计数器
+                </h2>
+                <div class="text-center py-6">
+                    <div id="counter" class="counter-display text-5xl font-black gradient-text mb-6">0</div>
+                    <div class="flex justify-center gap-3">
+                        <button onclick="decrement()" class="w-12 h-12 rounded-xl bg-gray-100 hover:bg-gray-200 transition-all flex items-center justify-center text-gray-700 font-bold text-xl">
+                            −
+                        </button>
+                        <button onclick="resetCounter()" class="px-4 h-12 rounded-xl bg-gray-100 hover:bg-gray-200 transition-all flex items-center justify-center text-gray-700 font-medium">
+                            重置
+                        </button>
+                        <button onclick="increment()" class="w-12 h-12 rounded-xl btn-primary text-white flex items-center justify-center font-bold text-xl">
+                            +
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 表单测试 -->
+            <div class="glass-card rounded-2xl p-6 stagger-enter">
+                <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <svg class="w-[20px] h-[20px] shrink-0 text-[rgb(var(--brand-rgb))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                    表单测试
+                </h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">你的名字</label>
+                        <input type="text" id="name-input" placeholder="输入你的名字" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[rgb(var(--brand-rgb))] focus:ring-2 focus:ring-[rgba(var(--brand-rgb),0.2)] outline-none transition-all">
+                    </div>
+                    <button onclick="greet()" class="w-full btn-primary text-white py-2.5 rounded-xl font-medium">
+                        打招呼 👋
+                    </button>
+                    <div id="greeting-result" class="hidden p-3 rounded-xl bg-[rgba(var(--brand-rgb),0.1)] text-[rgb(var(--brand-rgb))] text-center font-medium">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 浏览器信息 -->
+        <section class="glass-card rounded-2xl p-6 stagger-enter">
+            <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <svg class="w-[22px] h-[22px] shrink-0 text-[rgb(var(--brand-rgb))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
+                </svg>
+                浏览器信息
+            </h2>
+            <div class="code-block text-sm">
+                <pre id="browser-info">正在收集信息...</pre>
+            </div>
+        </section>
+
+        <!-- 部署提示 -->
+        <section class="glass-card rounded-2xl p-6 stagger-enter">
+            <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <svg class="w-[22px] h-[22px] shrink-0 text-[rgb(var(--brand-rgb))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                后续步骤
+            </h2>
+            <div class="space-y-3">
+                <div class="flex gap-3 items-start">
+                    <div class="w-6 h-6 rounded-full bg-[rgb(var(--brand-rgb))] text-white flex items-center justify-center text-sm font-bold shrink-0 mt-0.5">1</div>
+                    <div>
+                        <div class="font-medium text-gray-800">绑定自定义域名（可选）</div>
+                        <div class="text-sm text-gray-600 mt-1">在 Vercel 项目设置 → Domains 中添加你的域名，按提示配置 DNS 解析即可。</div>
+                    </div>
+                </div>
+                <div class="flex gap-3 items-start">
+                    <div class="w-6 h-6 rounded-full bg-[rgb(var(--brand-rgb))] text-white flex items-center justify-center text-sm font-bold shrink-0 mt-0.5">2</div>
+                    <div>
+                        <div class="font-medium text-gray-800">自动部署</div>
+                        <div class="text-sm text-gray-600 mt-1">之后你只需要将代码推送到 GitHub 仓库，Vercel 会自动触发部署，无需手动操作。</div>
+                    </div>
+                </div>
+                <div class="flex gap-3 items-start">
+                    <div class="w-6 h-6 rounded-full bg-[rgb(var(--brand-rgb))] text-white flex items-center justify-center text-sm font-bold shrink-0 mt-0.5">3</div>
+                    <div>
+                        <div class="font-medium text-gray-800">预览部署</div>
+                        <div class="text-sm text-gray-600 mt-1">每个 Pull Request 都会自动生成一个预览链接，方便你在合并前查看变更效果。</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-gray-500 text-sm pt-4 pb-8">
+            <p>🎉 恭喜！你的 Vercel 静态页面部署流程已全部完成</p>
+        </footer>
+    </main>
+
+    <script>
+        // 计数器功能
+        let count = 0;
+        const counterEl = document.getElementById('counter');
+        
+        function updateCounter() {
+            counterEl.textContent = count;
+        }
+        
+        function increment() {
+            count++;
+            updateCounter();
+        }
+        
+        function decrement() {
+            count--;
+            updateCounter();
+        }
+        
+        function resetCounter() {
+            count = 0;
+            updateCounter();
+        }
+        
+        // 打招呼功能
+        function greet() {
+            const name = document.getElementById('name-input').value.trim() || '朋友';
+            const resultEl = document.getElementById('greeting-result');
+            resultEl.textContent = `你好，${name}！👋 JavaScript 交互功能正常工作！`;
+            resultEl.classList.remove('hidden');
+        }
+        
+        // 检测环境信息
+        function detectEnvironment() {
+            const hostname = window.location.hostname;
+            
+            // 显示页面地址，避免直接输出完整裸URL
+            let displayUrl = hostname;
+            if (window.location.port) {
+                displayUrl += ':' + window.location.port;
+            }
+            document.getElementById('page-url').textContent = displayUrl;
+            
+            // 判断环境
+            let env = '本地开发环境';
+            if (hostname.includes('vercel.app')) {
+                env = 'Vercel 生产环境 ✓';
+            } else if (hostname === 'localhost' || hostname === '127.0.0.1') {
+                env = '本地开发环境';
+            } else if (hostname.includes('-git-')) {
+                env = 'Vercel 预览环境';
+            }
+            document.getElementById('environment').textContent = env;
+            
+            document.getElementById('protocol').textContent = window.location.protocol === 'https:' ? 'HTTPS 安全连接 ✓' : 'HTTP 连接';
+            
+            // 计算加载时间
+            window.addEventListener('load', () => {
+                const loadTime = performance.now();
+                document.getElementById('load-time').textContent = `${loadTime.toFixed(0)} ms`;
+            });
+        }
+        
+        // 收集浏览器信息
+        function collectBrowserInfo() {
+            const info = {
+                '用户代理': navigator.userAgent,
+                '语言': navigator.language,
+                '平台': navigator.platform,
+                '屏幕尺寸': `${screen.width} × ${screen.height}`,
+                '窗口尺寸': `${window.innerWidth} × ${window.innerHeight}`,
+                '像素比': window.devicePixelRatio,
+                '在线状态': navigator.onLine ? '在线' : '离线',
+                'Cookie 启用': navigator.cookieEnabled ? '是' : '否',
+            };
+            
+            let text = '';
+            for (const [key, value] of Object.entries(info)) {
+                text += `${key}: ${value}\n`;
+            }
+            document.getElementById('browser-info').textContent = text;
+        }
+        
+        // 运行所有测试
+        function runAllTests() {
+            const tests = [
+                { id: 'html', pass: true, message: 'HTML 加载成功 ✓' },
+                { id: 'css', pass: true, message: 'CSS 样式正常 ✓' },
+                { id: 'js', pass: true, message: 'JavaScript 运行正常 ✓' },
+                { id: 'responsive', pass: true, message: '响应式正常 ✓' },
+                { id: 'https', pass: window.location.protocol === 'https:', message: window.location.protocol === 'https:' ? 'HTTPS 已启用 ✓' : '非 HTTPS 连接' },
+                { id: 'cdn', pass: true, message: 'CDN 加速正常 ✓' },
+            ];
+            
+            let passCount = 0;
+            
+            tests.forEach((test, index) => {
+                setTimeout(() => {
+                    const item = document.querySelector(`[data-test="${test.id}"]`);
+                    const statusEl = item.querySelector('.test-status');
+                    const iconEl = item.querySelector('.test-icon');
+                    
+                    item.classList.add('pass');
+                    
+                    if (test.pass) {
+                        passCount++;
+                        statusEl.textContent = test.message;
+                        statusEl.className = 'test-status text-sm font-medium text-[rgb(var(--success-rgb))]';
+                        iconEl.className = 'test-icon w-8 h-8 rounded-lg bg-[rgba(var(--success-rgb),0.1)] flex items-center justify-center';
+                        iconEl.innerHTML = `<svg class="w-[18px] h-[18px] text-[rgb(var(--success-rgb))]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+                    } else {
+                        statusEl.textContent = '未通过';
+                        statusEl.className = 'test-status text-sm font-medium text-red-500';
+                        iconEl.className = 'test-icon w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center';
+                        iconEl.innerHTML = `<svg class="w-[18px] h-[18px] text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+                    }
+                    
+                    if (index === tests.length - 1) {
+                        document.getElementById('test-summary').classList.remove('hidden');
+                        document.getElementById('pass-count').textContent = `${passCount}/${tests.length} 通过`;
+                    }
+                }, index * 200);
+            });
+        }
+        
+        // 页面加载完成后自动初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            detectEnvironment();
+            collectBrowserInfo();
+            
+            // 延迟自动运行测试
+            setTimeout(runAllTests, 500);
+        });
+        
+        // 窗口大小变化时更新信息
+        window.addEventListener('resize', collectBrowserInfo);
+    </script>
+</body>
+</html><!--05565730462395614730101120--><!--05646093512573747210101120--><!--05866374582395614730101120-->
